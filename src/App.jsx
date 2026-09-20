@@ -2,9 +2,9 @@ import Hero from './components/Hero'
 import Portrait from './components/Portrait'
 import LightSection from './components/LightSection'
 import Letter from './components/Letter'
+import Game from './components/Game'
 import Closing from './components/Closing'
 import Footer from './components/Footer'
-import AudioPlayer from './components/AudioPlayer'
 
 export default function App() {
   return (
@@ -13,9 +13,9 @@ export default function App() {
       <Portrait />
       <LightSection />
       <Letter />
+      <Game />
       <Closing />
       <Footer />
-      <AudioPlayer />
     </main>
   )
 }
