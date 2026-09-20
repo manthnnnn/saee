@@ -1,0 +1,92 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg-primary: #FDFBF7;
+  --bg-secondary: #F7F3EC;
+  --bg-tertiary: #EFE9DE;
+  --card-bg: rgba(255, 255, 255, 0.75);
+  --card-border: rgba(214, 199, 183, 0.4);
+  --card-hover-border: rgba(194, 153, 136, 0.6);
+  --text-main: #2D2926;
+  --text-muted: #6E675F;
+  --text-accent: #A36B5E;
+  --text-highlight: #6B7A66;
+  --accent-blush: #F0D9D5;
+  --accent-gold: #E5C388;
+  --accent-sage: #D8E0D5;
+  --shadow-ambient: 0 10px 30px -10px rgba(78, 64, 53, 0.08);
+  --shadow-elevated: 0 20px 40px -15px rgba(78, 64, 53, 0.12);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+  background-color: var(--bg-primary);
+  color: var(--text-main);
+  font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+::selection {
+  background: var(--accent-blush);
+  color: var(--text-accent);
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 4px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-secondary);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--accent-gold);
+  border-radius: 2px;
+}
+
+/* Grain texture overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 9999;
+  opacity: 0.4;
+}
+
+@layer components {
+  .section-pad {
+    @apply px-6 py-24 md:py-36 md:px-16 lg:px-28;
+  }
+  .label-text {
+    @apply font-body text-xs tracking-[0.2em] uppercase text-text-muted;
+  }
+  .card-glass {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 20px;
+    box-shadow: var(--shadow-ambient);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+  }
+  .card-glass:hover {
+    border-color: var(--card-hover-border);
+    box-shadow: var(--shadow-elevated);
+    transform: translateY(-4px);
+  }
+}
