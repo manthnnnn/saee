@@ -3,6 +3,38 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { RotateCcw } from 'lucide-react'
 import { useInView } from 'framer-motion'
 
+// ─── Messages ────────────────────────────────────────────────────────────────
+const MESSAGES = [
+  'you make everything feel lighter.',
+  'the way you think is genuinely beautiful.',
+  'you\'re doing great. in general.',
+  'your presence is enough.',
+  'I notice the small things you do.',
+  'you carry things with such quiet grace.',
+  'everything\'s better with you around.',
+  'you deserve every good thing.',
+  'your warmth is not a small thing.',
+  'you are someone\'s favourite kind of person.',
+  'you don\'t have to earn being cared for.',
+  'the world is genuinely better with you in it.',
+  'you\'re more seen than you know.',
+  'rest is allowed. you\'ve earned it.',
+  'you matter — plainly, without conditions.',
+  'your laugh is one of the good sounds.',
+  'being around you is easy. that\'s rare.',
+  'you are exactly enough.',
+  'the softness in you is a kind of strength.',
+  'you notice the right things.',
+  'you make people feel at home.',
+  'some people just carry warmth — you\'re one of them.',
+]
+
+let msgIdx = Math.floor(Math.random() * MESSAGES.length)
+const nextMsg = () => {
+  msgIdx = (msgIdx + 1) % MESSAGES.length
+  return MESSAGES[msgIdx]
+}
+
 // ─── Tile color map ─────────────────────────────────────────────────────────
 const TILE_STYLES = {
   2:    { bg: '#F0D9D5', color: '#2D2926', fontSize: '2rem' },
@@ -117,6 +149,14 @@ export default function Game() {
   const [best, setBest] = useState(() => Number(localStorage.getItem('saee2048best') || 0))
   const [status, setStatus] = useState('playing') // 'playing' | 'won' | 'over'
   const [continuedAfterWin, setContinuedAfterWin] = useState(false)
+  const [toast, setToast] = useState(null) // { text, key }
+  const toastTimer = useRef(null)
+
+  const showToast = useCallback(() => {
+    if (toastTimer.current) clearTimeout(toastTimer.current)
+    setToast({ text: nextMsg(), key: Date.now() })
+    toastTimer.current = setTimeout(() => setToast(null), 2500)
+  }, [])
 
   const touchStart = useRef(null)
 
@@ -147,12 +187,14 @@ export default function Game() {
         return newScore
       })
 
+      showToast()
+
       if (!continuedAfterWin && hasWon(withTile)) setStatus('won')
       else if (!hasMovesLeft(withTile)) setStatus('over')
 
       return withTile
     })
-  }, [status, continuedAfterWin])
+  }, [status, continuedAfterWin, showToast])
 
   // Keyboard
   useEffect(() => {
@@ -230,6 +272,33 @@ export default function Game() {
         >
           arrow keys · swipe · merge to 2048
         </motion.p>
+
+        {/* Message Toast */}
+        <div className="relative h-8 mb-2 flex items-center justify-center">
+          <AnimatePresence mode="wait">
+            {toast && (
+              <motion.p
+                key={toast.key}
+                initial={{ opacity: 0, y: 6, filter: 'blur(4px)' }}
+                animate={{ opacity: 1, y: 0, filter: 'blur(0px)' }}
+                exit={{ opacity: 0, y: -6, filter: 'blur(4px)' }}
+                transition={{ duration: 0.35, ease: 'easeOut' }}
+                style={{
+                  fontFamily: 'Cormorant Garamond, serif',
+                  fontSize: '1rem',
+                  fontStyle: 'italic',
+                  color: 'var(--text-accent)',
+                  fontWeight: 300,
+                  letterSpacing: '0.01em',
+                  textAlign: 'center',
+                  pointerEvents: 'none',
+                }}
+              >
+                {toast.text}
+              </motion.p>
+            )}
+          </AnimatePresence>
+        </div>
 
         {/* Board */}
         <motion.div
